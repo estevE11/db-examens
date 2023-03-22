@@ -237,3 +237,43 @@ SELECT
     avg(e.salary)
 FROM
     employees e;
+
+
+-- 12
+SELECT
+    e.job_id,
+    e.department_id,
+    AVG(e.salary),
+FROM
+    employees e
+GROUP BY
+    CUBE (e.job_id,
+    e.department_id);
+
+
+-- 13
+SELECT
+    e.department_id,
+    e.last_name
+FROM
+    employees e
+WHERE
+    e.salary > (
+        SELECT
+            AVG(e2.salary)
+        FROM
+            employees e2
+        WHERE
+            e2.department_id = e.department_id
+    )
+    AND e.department_id IN (
+        SELECT
+            employees.department_id
+        FROM
+            employees
+        GROUP BY
+            employees.department_id
+        HAVING
+            COUNT(*) > 1
+    );
+    
